@@ -1,0 +1,119 @@
+openapi: 3.0.3
+info:
+  title: Folder API
+  description: API para gestión de carpetas con login fake
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:3001
+
+paths:
+  /login:
+    post:
+      summary: Login fake de usuario
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: Login exitoso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+
+  /folders:
+    get:
+      summary: Obtener carpetas por usuario
+      parameters:
+        - name: userId
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Lista de carpetas
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Folder'
+
+    post:
+      summary: Crear una carpeta
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateFolderRequest'
+      responses:
+        '201':
+          description: Carpeta creada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Folder'
+
+components:
+  schemas:
+    Folder:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "uuid-123"
+        name:
+          type: string
+          example: "Mis documentos"
+        userId:
+          type: string
+          example: "1"
+
+    CreateFolderRequest:
+      type: object
+      required:
+        - name
+        - userId
+      properties:
+        name:
+          type: string
+        userId:
+          type: string
+
+    LoginRequest:
+      type: object
+      required:
+        - email
+        - password
+      properties:
+        email:
+          type: string
+          example: "test@test.com"
+        password:
+          type: string
+          example: "1234"
+
+    LoginResponse:
+      type: object
+      properties:
+        user:
+          type: object
+          properties:
+            id:
+              type: string
+              example: "1"
+            name:
+              type: string
+              example: "Diego"
+            email:
+              type: string
+              example: "test@test.com"
+        token:
+          type: string
+          example: "fake-jwt-token"
